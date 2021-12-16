@@ -1,0 +1,8 @@
+[core]
+	bare = false
+	filemode = false
+	logallrefupdates = true
+	repositoryformatversion = 0
+[remote "global"]
+	url = git@github.com:dL31/global.git
+	fetch = +refs/heads/*:refs/remotes/global/*

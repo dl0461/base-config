@@ -1,0 +1,10 @@
+/*
+!/.config/
+/.config/*
+
+!/.config/git
+!/.config/nvim
+
+!/.bashrc
+!/.git-distributed
+!/.profile

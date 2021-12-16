@@ -1,0 +1,14 @@
+[user]
+	email = daniellicari0461@gmail.com
+	name = dL31
+[protocol]
+	ssh = allow
+[color]
+	ui = false
+	branch = false
+	diff = false
+	interactive = false
+	status = false
+	log = false
+[core]
+	pager = "less -SRF"
