@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+if [ $# -eq 0 ]; then
+	git remote -v
+else
+	for i in $@; do
+		if ! git push -f "$i"; then #2> /dev/null; then
+			git push -uf "$i" "$(git branch --show-current)"
+		fi
+	done
+fi

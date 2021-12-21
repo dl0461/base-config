@@ -1,0 +1,187 @@
+#!/usr/bin/env sh
+
+# The common dotfiles repository is defined here as the first argument equal to 0.
+# There is one common dotfiles repository.
+# There are the branches ⟨gnu,...,bsd⟩.
+
+# A dotfiles repository unique to one system is defined as the first argument that is an integer greater than 0.
+
+usage () {
+	cat 1>&2 <<- EOF
+		$(basename "$0"): <n∈N ⇒ (which gitn) exit status will be 0>
+		    [-c⇒commit→rebase|-p⇒push|-r⇒fetch→resethard|-m⇒merge|-i⇒init]
+		    [-r <a⇒$USER|for-username>] [-m <branch>]
+		execution order: c→p→r→m→i
+	EOF
+}
+
+if ! [ "$1" -gt -1 ] > /dev/null 2>&1; then
+	usage
+	exit 1
+fi
+
+if [ "$1" -eq 0 ]; then
+	GIT=$HOME/.local/bin/0/git$1
+else
+	GIT=$HOME/.local/bin/1/git$1
+fi
+
+cd
+
+if [ -z "$2" ]; then
+	"$GIT" status
+	exit 0
+fi
+
+CUR_BRANCH=$("$GIT" branch --show-current 2> /dev/null)
+TYPE=$1
+USER_FOR_REMOTE=daniel
+
+shift
+
+home () {
+	printf '%s' "$(eval printf '%s' ~"$1")"
+}
+remotebranch () {
+	"$GIT" branch -r | grep -q "$1"
+}
+rewrite () {
+	"$GIT" add "$HOME"
+	"$GIT" commit -m 3
+	"$GIT" rebase -i HEAD^^
+}
+setremote () {
+	remotebranch "$1" || "$GIT" push --set-upstream origin "$1"
+}
+
+init ()
+{
+	lnh () {
+		/bin/ln -fv "$1" "$2"
+		[ "x" = "$3" ] && /bin/chmod -v 700 "$1"
+	}
+
+	g=$HOME/.git$TYPE
+
+	if [ ! -h "$HOME/.zprofile" ]
+	then
+		git config core.filemode true
+		/bin/mv -v "$HOME/.git" "$g"
+
+		export BIN="$HOME/.local/bin"
+		export EDITOR="$(which nvim)"
+		export XDG_CONFIG_HOME="$HOME/.config"
+		export XDG_DATA_HOME="$HOME/.local/share"
+		export XDG_STATE_HOME="$HOME/.local/state"
+		export ZDOTDIR="$HOME"
+
+		eval export S"$TYPE"="$HOME/.config/shell/$TYPE"
+		eval export B"$TYPE"="$BIN/$TYPE"
+
+		export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:"$BIN/$TYPE"
+
+		[ "$SHELL" != '/bin/zsh' ] && chsh -s /bin/zsh
+	fi
+
+	gd=$XDG_CONFIG_HOME/git
+	lnh "$gd/exclude$1" "$g/info/exclude"
+	for h in $(basename "$gd/hooks"/*)
+	do
+		lnh "$gd/hooks/$h" "$g/hooks/$h" "x"
+	done
+
+	mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
+
+	if [ -f "$XDG_CONFIG_HOME/shell/$1/init-more" ]; then
+		. "$XDG_CONFIG_HOME/shell/$1/init-more"
+	fi
+}
+
+arg_c=''
+arg_p=''
+arg_i=''
+arg_r='' && argof_r=''
+arg_m='' && argof_m=''
+if ! args=$(getopt -n "$0" -o hcpir:m: -- "$@")
+then
+	usage
+	exit 1
+fi
+eval set -- "$args"
+while [ "$#" -gt 0 ]
+do
+	case "$1" in
+	-h) usage && exit 0 ;;
+	-c) arg_c=1 && shift ;;
+	-p) arg_p=1 && shift ;;
+	-i) arg_i=1 && shift ;;
+	-r)
+		arg_r=1
+		argof_r=$2
+		shift 2
+		;;
+	-m)
+		arg_m=1
+		argof_m=$2
+		shift 2
+		;;
+	--)
+		shift
+		;;
+	*)
+		usage
+		exit 1
+		;;
+	esac
+done
+if [ "$arg_c" ]
+then
+	rewrite
+fi
+if [ "$arg_p" ]
+then
+	setremote "$CUR_BRANCH"
+	if [ "$USER" = "$USER_FOR_REMOTE" ]; then
+		"$GIT" remote | xargs -L1 "$GIT" push --all -f
+	fi
+fi
+if [ "$arg_r" ]
+then
+	id
+	"$GIT" log --oneline HEAD^!
+	if [ "$argof_r" = a ]
+	then
+		if [ "$USER" = "$USER_FOR_REMOTE" ]
+		then
+			setremote "$CUR_BRANCH"
+			"$GIT" fetch -v
+			"$GIT" reset --hard "origin/$CUR_BRANCH"
+			init "$TYPE"
+		else
+			"$GIT" fetch -v "$(home "$USER_FOR_REMOTE")/.$GIT"
+			"$GIT" reset --hard FETCH_HEAD
+			init "$TYPE"
+		fi
+	else
+		sudo -iu "$argof_r" -- sh -c "id\
+			&& $GIT fetch -v $(home "$USER")/.$GIT\
+			&& $GIT reset --hard FETCH_HEAD\
+			&& $(basename "$0") $TYPE -i"
+	fi
+fi
+if [ "$arg_m" ]
+then
+	rb=$(remotebranch "$argof_m" && printf '%s' "origin/$argof_m")
+	"$GIT" merge --squash HEAD "$rb"
+	"$EDITOR" $("$GIT" diff --cached --diff-filter=U --name-status HEAD\
+		| awk '{ print $2 }')
+	"$GIT" branch -dr "$rb"
+	"$GIT" branch -D "$argof_m"
+fi
+if [ "$arg_i" ]
+then
+	init "$TYPE"
+	echo "If this is the first time $(basename "$0") -i, logout."
+fi
+
+exit 0

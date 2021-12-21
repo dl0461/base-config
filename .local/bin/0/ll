@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+ls -lFc --group-directories-first --color=never "$@"

@@ -1,8 +1,0 @@
-[core]
-	bare = false
-	filemode = false
-	logallrefupdates = true
-	repositoryformatversion = 0
-[remote "laptop"]
-	url = git@github.com:dL31/laptop.git
-	fetch = +refs/heads/*:refs/remotes/laptop/*

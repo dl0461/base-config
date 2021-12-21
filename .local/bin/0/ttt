@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+tree -L 3 -nF --dirsfirst "$@"
