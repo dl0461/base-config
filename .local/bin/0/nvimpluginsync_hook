@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-nvim --headless +'autocmd User PackerComplete qa!' +'PackerSync'\
-	&> ~/.local/state/zsh/nvimpluginsync_hook

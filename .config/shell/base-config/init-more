@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+lnh () {
+	/bin/ln "-$3fv" "$1" "$2"
+}
+
+lnh "$EDITOR" "$BIN/e" s
+lnh "$XDG_CONFIG_HOME/shell/base-config/zshrc.sh" "$ZDOTDIR/.zshrc" s
+lnh "$XDG_CONFIG_HOME/shell/base-config/zprofile.sh" "$ZDOTDIR/.zprofile" s

@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+
+TYPE=$1
+
+lnh () {
+	/bin/ln -fv "$1" "$2"
+	[ "x" = "$3" ] && /bin/chmod -v 700 "$1"
+}
+
+g=$HOME/.git-$TYPE
+
+
+if [ ! -h "$HOME/.zprofile" ] # base-config hasn't been installed
+then
+	git config core.filemode true
+	/bin/mv -v "$HOME/.git" "$g"
+
+	export BIN="$HOME/.local/bin"
+	export EDITOR="$(which nvim)"
+	export XDG_CONFIG_HOME="$HOME/.config"
+	export XDG_DATA_HOME="$HOME/.local/share"
+	export XDG_STATE_HOME="$HOME/.local/state"
+	export ZDOTDIR="$HOME"
+
+	export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:"$BIN/$TYPE"
+
+	if [ "$SHELL" != '/bin/zsh' ]
+	then
+		echo "Changing shell to Zsh..."
+		chsh -s /bin/zsh
+	fi
+fi
+
+gd=$XDG_CONFIG_HOME/git
+lnh "$gd/exclude-$TYPE" "$g/info/exclude"
+for h in $(basename "$gd/hooks"/*)
+do
+	lnh "$gd/hooks/$h" "$g/hooks/$h" "x"
+done
+
+mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
+
+if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
+	. "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
+fi

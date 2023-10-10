@@ -15,7 +15,10 @@ setopt HIST_VERIFY
 setopt INC_APPEND_HISTORY
 setopt INTERACTIVE_COMMENTS
 
-stty stop undef
+if [[ $- == *i* ]]; then
+	stty stop undef
+	stty start undef
+fi
 
 zstyle ':completion:*' menu select
 zmodload zsh/complist
@@ -24,13 +27,13 @@ _comp_options+=(globdots)
 
 zle-keymap-select() {
     case $KEYMAP in
-        vicmd) echo -ne '\e[1 q';;
-        viins|main) echo -ne '\e[5 q';;
+        vicmd) echo -ne '\e[2 q';;
+        viins|main) echo -ne '\e[6 q';;
     esac
 }
 zle-line-init() {
     zle -K viins
-    echo -ne "\e[5 q"
+    echo -ne "\e[6 q"
 }
 
 zle -N zle-keymap-select
@@ -51,8 +54,18 @@ alias \
 	rm='rm -i' \
 	rmdir='rmdir -v' \
 	rsync='rsync --progress'\
-	tmux='tmux -f $CFG/tmux/tmux.conf'
 
-[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
+source_extra () {
+	setopt localoptions nullglob
+	for dir in "$CFG"/*-config; do
+		if [ -d "$dir" ]; then
+			for file in "$dir"/"$1"; do
+				if [ -f "$file" ]; then
+					. "$file"
+				fi
+			done
+		fi
+	done
+}
 
-[ -f "$S1/zshrc.sh" ] && . "$S1/zshrc.sh"
+source_extra 'zshrc.sh'

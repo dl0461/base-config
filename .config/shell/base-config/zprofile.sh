@@ -18,26 +18,35 @@ export XDG_STATE_HOME=$HOME/.local/state
 export BIN=$HOME/.local/bin
 export CFG=$XDG_CONFIG_HOME
 export DTA=$XDG_DATA_HOME
-export S0=$XDG_CONFIG_HOME/shell/0
-export S1=$XDG_CONFIG_HOME/shell/1
 
-export B0=$BIN/0
 export EDITOR=$(which nvim)
 export HISTFILE=$XDG_STATE_HOME/zsh/histfile
 export HISTSIZE=300
 export LESSCHARSET=utf-8
 export LESSHISTFILE=-
 export MANPAGER='nvim +Man!'
-export NO_COLOR='nocolor'
 export PAGER=$(which less)
 export SAVEHIST=300
 export VISUAL=$EDITOR
 export ZDOTDIR=$HOME
 
-export PATH=$PATH:$BIN:$(find "$BIN" -type d -name '[0-9]' -printf '%p:')
+export PATH=$PATH:$BIN:$(find "$BIN" -maxdepth 1 -type d -name '*-config' -printf '%p:')
 
 [ "$SSH_AGENT_PID" ] || eval "$(ssh-agent)" > /dev/null
 
-[ "$TMUX" ] || trap "ssh-agent -k > /dev/null" EXIT
+source_extra () {
+	setopt localoptions nullglob
+	for dir in "$CFG"/*-config; do
+		if [ -d "$dir" ]; then
+			for file in "$dir"/"$1"; do
+				if [ -f "$file" ]; then
+					. "$file"
+				fi
+			done
+		fi
+	done
+}
 
-[ -f "$S1/zprofile.sh" ] && . "$S1/zprofile.sh"
+source_extra 'zprofile.sh'
+
+exec sway
