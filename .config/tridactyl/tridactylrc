@@ -1,0 +1,15 @@
+bind j scrollline 2
+bind k scrollline -2
+unbind <C-u>
+unbind <C-d>
+bind u scrollpage -0.5
+bind d scrollpage 0.5
+bind zi zoom 0.5 true
+bind zI zoom 2 true
+bind ZI zoom 2 true
+bind zR zoom -2 true
+bind ZR zoom -2 true
+bind <C-J> tabm -1
+bind <C-K> tabm +1
+autocmd DocStart ".*localhost:8888.*" "mode ignore"
+colourscheme quake
