@@ -1,0 +1,29 @@
+{
+    "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+    "Lua.workspace.library": [
+        "/home/daniel/.config/nvim",
+        "/etc/xdg/nvim",
+        "/home/daniel/.local/share/nvim/site",
+        "/home/daniel/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",
+        "/home/daniel/.local/share/nvim/site/pack/packer/start/nvim-lspconfig",
+        "/home/daniel/.local/share/nvim/site/pack/packer/start/packer.nvim",
+        "/home/daniel/.local/share/nvim/site/pack/packer/start/plenary.nvim",
+        "/home/daniel/.local/share/nvim/site/pack/packer/start/vim-surround",
+        "/usr/share/nvim/runtime",
+        "/usr/lib/nvim",
+        "/usr/share/vim/vimfiles",
+        "${3rd}/luassert/library",
+        "/tmp/lua-language-server.WmNd/meta/16c67f25",
+        "/tmp/lua-language-server.7fIx/meta/16c67f25",
+        "/tmp/lua-language-server.mCgQ/meta/16c67f25",
+        "/tmp/lua-language-server.9YWh/meta/16c67f25",
+        "/tmp/lua-language-server.4ak1/meta/16c67f25",
+        "/tmp/lua-language-server.qgwm/meta/16c67f25",
+        "/tmp/lua-language-server.Ibfb/meta/16c67f25",
+        "/tmp/lua-language-server.tPWt/meta/16c67f25",
+        "/tmp/lua-language-server.wd56/meta/16c67f25",
+        "/tmp/lua-language-server.or7p/meta/16c67f25",
+        "/tmp/lua-language-server.0DC8/meta/16c67f25"
+    ],
+    "workspace.checkThirdParty": false
+}

@@ -13,6 +13,8 @@
 /.config/shell/*
 !/.config/shell/base-config
 
+!/.config/nvim
+
 !/.local
 /.local/*
 
