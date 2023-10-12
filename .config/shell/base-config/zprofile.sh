@@ -49,5 +49,3 @@ source_extra () {
 }
 
 source_extra 'zprofile.sh'
-
-exec sway
