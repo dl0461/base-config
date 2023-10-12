@@ -41,4 +41,7 @@ let g:netrw_browsex_viewer=""
 let g:netrw_home="$XDG_STATE_HOME/nvim"
 let g:netrw_keepdir=0
 
-syntax enable | colorscheme gradient
+syntax enable
+if filereadable(expand('~/.config/nvim/colors/gradient.vim'))
+	colorscheme gradient
+endif

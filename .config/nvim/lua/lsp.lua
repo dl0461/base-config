@@ -84,10 +84,6 @@ if Which 'shellcheck' then
 		capabilities = capabilities,
 	}
 end
--- c#
---
---
-
 -- typescript
 -- https://deno.com
 -- pacman community repo

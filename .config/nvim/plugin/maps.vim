@@ -3,8 +3,8 @@ let mapleader = ","
 nnoremap <F3> :silent exec
 			\ "while !search(@/, \"W\") \| bn \| 0 \| endwhile"<CR>
 
-"noremap <leader>m :call ToggleRelativeNumber()<CR>
-noremap <leader>m :call ListingToMarkdown()<CR>q
+noremap <leader>m :call ToggleRelativeNumber()<CR>
+"noremap <leader>m :call ListingToMarkdown()<CR>q
 
 map <C-h> <C-w>h
 map <C-j> <C-w>j
