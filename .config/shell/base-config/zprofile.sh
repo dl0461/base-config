@@ -35,6 +35,14 @@ export PATH=$PATH:$BIN:$(find "$BIN" -maxdepth 1 -type d -name '*-config' -print
 
 [ "$SSH_AGENT_PID" ] || eval "$(ssh-agent)" > /dev/null
 
+if [ -f "$HOME/.ssh/github" ]; then
+		ssh-add "$HOME/.ssh/github" &> /dev/null
+fi
+
+if [ -f "$HOME/.ssh/home" ]; then
+		ssh-add "$HOME/.ssh/home" &> /dev/null
+fi
+
 source_extra () {
 	setopt localoptions nullglob
 	for d in $(find "$CFG"/shell -name '*-config' | grep -v 'base-config'); do
