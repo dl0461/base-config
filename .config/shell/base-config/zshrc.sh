@@ -1,4 +1,4 @@
-autoload -U compinit
+autoload -Uz compinit && compinit
 
 PS1="%B%F{12}%n@%m %~%F{reset_color}%b"$'\n'
 
