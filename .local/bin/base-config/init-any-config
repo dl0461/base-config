@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+if [ -z "$1" ]; then
+	echo "Provide a *-config repo"
+	exit 0
+fi
+
 TYPE=$1
 
 lnh () {
@@ -9,6 +14,7 @@ lnh () {
 
 g=$HOME/.git-$TYPE
 
+echo "If this is the first time $TYPE has be initialized, logout."
 
 if [ ! -h "$HOME/.zprofile" ] # base-config hasn't been installed
 then

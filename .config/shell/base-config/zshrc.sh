@@ -57,13 +57,9 @@ alias \
 
 source_extra () {
 	setopt localoptions nullglob
-	for dir in "$CFG"/*-config; do
-		if [ -d "$dir" ]; then
-			for file in "$dir"/"$1"; do
-				if [ -f "$file" ]; then
-					. "$file"
-				fi
-			done
+	for d in $(find "$CFG"/shell -name '*-config' | grep -v 'base-config'); do
+		if [ -f "$d"/"$1" ]; then
+			. "$d"/"$1"
 		fi
 	done
 }
