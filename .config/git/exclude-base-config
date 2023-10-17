@@ -22,3 +22,5 @@
 !/.local/bin
 /.local/bin/*
 !/.local/bin/base-config
+
+!/README.md

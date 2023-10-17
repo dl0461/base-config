@@ -1,25 +1,25 @@
 #!/usr/bin/env sh
 
-if [ -z "$1" ]; then
+if [ -z "$1" ] || ! echo "$1" | grep -q '.*-config'; then
 	echo "Provide a *-config repo"
 	exit 0
 fi
 
 TYPE=$1
 
-lnh () {
+lnh() {
 	/bin/ln -fv "$1" "$2"
 	[ "x" = "$3" ] && /bin/chmod -v 700 "$1"
 }
 
-g=$HOME/.git-$TYPE
+git_type=$HOME/.git-$TYPE
 
-echo "If this is the first time $TYPE has be initialized, logout."
+if [ ! -d "$git_type" ]; then
+	/bin/mv -v "$HOME/$TYPE/.git" "$git_type"
+fi
 
-if [ ! -h "$HOME/.zprofile" ] # base-config hasn't been installed
-then
+if [ ! -h "$HOME/.zprofile" ]; then # base-config hasn't been installed
 	git config core.filemode true
-	/bin/mv -v "$HOME/.git" "$g"
 
 	export BIN="$HOME/.local/bin"
 	export EDITOR="$(which nvim)"
@@ -30,18 +30,18 @@ then
 
 	export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:"$BIN/$TYPE"
 
-	if [ "$SHELL" != '/bin/zsh' ]
-	then
+	if [ "$SHELL" != '/bin/zsh' ]; then
 		echo "Changing shell to Zsh..."
 		chsh -s /bin/zsh
 	fi
 fi
 
-gd=$XDG_CONFIG_HOME/git
-lnh "$gd/exclude-$TYPE" "$g/info/exclude"
-for h in $(basename "$gd/hooks"/*)
-do
-	lnh "$gd/hooks/$h" "$g/hooks/$h" "x"
+git_config_dir=$XDG_CONFIG_HOME/git
+
+lnh "$git_config_dir/exclude-$TYPE" "$git_type/info/exclude"
+
+for hook in $(basename "$git_config_dir/hooks"/*); do
+	lnh "$git_config_dir/hooks/$hook" "$git_type/hooks/$hook" "x"
 done
 
 mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
@@ -49,3 +49,5 @@ mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
 if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
 	. "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
 fi
+
+echo "If this is the first time $TYPE has be initialized, logout."
