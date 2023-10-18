@@ -1,5 +1,3 @@
-autoload -Uz compinit && compinit
-
 PS1="%B%F{12}%n@%m %~%F{reset_color}%b"$'\n'
 
 export KEYTIMEOUT=1
@@ -20,10 +18,12 @@ if [[ $- == *i* ]]; then
 	stty start undef
 fi
 
+autoload -Uz compinit && compinit -i
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots)
+fpath=($DTA/zsh/site-functions $fpath) # put completion scripts in site-functions (like _docker)
 
 zle-keymap-select() {
     case $KEYMAP in
@@ -55,7 +55,16 @@ alias \
 	rmdir='rmdir -v' \
 	rsync='rsync --progress'\
 
-source_extra () {
+alias sgpt='if [[ -z "$OPENAI_API_KEY" ]]; then
+				export OPENAI_API_KEY=$(gpg --decrypt $CFG/openai/key.txt.gpg 2>/dev/null)
+				if [[ -z "$OPENAI_API_KEY" ]]; then
+					echo "Error: Unable to decrypt OPENAI_API_KEY."
+					return 1
+				fi
+			fi
+			"$BIN/sgpt"'
+
+source_extra() {
 	setopt localoptions nullglob
 	for d in $(find "$CFG"/shell -name '*-config' | grep -v 'base-config'); do
 		if [ -f "$d"/"$1" ]; then
