@@ -1,12 +1,11 @@
-# `*-config`
+# `*`-config
 
-`*-config` repos are a manifestation of a pattern for user configuration on Linux. There is one repo that contains files used by any instance; it is called `base-config`. Replace `git [commands]` with `git-<*-config repo name> [commands]` to use a `*-config` repo.
+`*`-config is a framework for user configuration on Linux. `base-config` is the instance of `*`-config that contains files that are the most likely to be used on every Linux instance. Replace `git [commands]` with `git-<*-config repo name> [commands]` to use a `*`-config repo.
 
-This `README.md` is present in all `*-config` repos.
+This `README.md` is present in all `*`-config repos.
 
 ## Todo
 
-- repair installation process (and guide)
 - streamline sensitive database synchronization
 
 ## Dependencies
@@ -15,20 +14,23 @@ This `README.md` is present in all `*-config` repos.
 - Neovim
 - Python
 
-## Installation of a `*-config` repo
+## Install a `*`-config
 
 Assign `config_repo=base-config` (or another repo like `wayland-config`) then do
 
 ```shell
 cd
 git clone --depth 1 https://github.com/dl0461/"$config_repo".git
+IN THE SCRIPT BELOW WE MV ALL THE FILES TO THE PROPER PLACES IN THE HOME DIR
+✓	FOR base-config, WE MV THEM IF zprofile DOESNT EXIST
+	FOR OTHER-config, WE MV THEM IN THE "$XDG_CONFIG_HOME"/shell/OTHER-config/init-more
+✓ WE RMDIR THE $config_repo AT THE END OF THIS SCRIPT
 . "$config_repo"/.local/bin/"$config_repo"/init-any-config "$config_repo"
-mv "$config_repo"/.* . && rmdir "$config_repo"
 ```
 
 , now logout.
 
-## Create a `*-config` repo
+## Create a `*`-config repo
 
 ### Shell Configuration
 

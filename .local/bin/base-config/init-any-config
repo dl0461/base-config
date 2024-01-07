@@ -19,16 +19,35 @@ if [ ! -d "$git_type" ]; then
 fi
 
 if [ ! -h "$HOME/.zprofile" ]; then # base-config hasn't been installed
+
+	base_config=$TYPE/.config
+	base_bin=$TYPE/.local/bin
+	base_path=/usr/local/sbin:/usr/local/bin:/usr/bin
+
+	home_config=$HOME/.config
+	home_bin=$HOME/.local/bin
+
+	for dir in git nvim shell tridactyl; do
+		if ! mkdir "$home_config/$dir"; then
+			echo "$home_config/$dir exists. Backup then remove this directory."
+			exit 1
+		fi
+		mv "$base_config/$dir/"* "$home_config/$dir"
+	done
+
+	mkdir -p "$home_bin"
+	mv "$base_bin/$TYPE" "$home_bin"
+	
 	git config core.filemode true
 
-	export BIN="$HOME/.local/bin"
+	export BIN="$home_bin"
 	export EDITOR="$(which nvim)"
-	export XDG_CONFIG_HOME="$HOME/.config"
+	export XDG_CONFIG_HOME="$home_config"
 	export XDG_DATA_HOME="$HOME/.local/share"
 	export XDG_STATE_HOME="$HOME/.local/state"
 	export ZDOTDIR="$HOME"
 
-	export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:"$BIN/$TYPE"
+	export PATH="$base_path:$BIN/$TYPE"
 
 	if [ "$SHELL" != '/bin/zsh' ]; then
 		echo "Changing shell to Zsh..."
@@ -49,5 +68,7 @@ mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
 if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
 	. "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
 fi
+
+rmdir "$TYPE"
 
 echo "If this is the first time $TYPE has be initialized, logout."
