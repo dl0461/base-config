@@ -4,6 +4,15 @@ lnh () {
 	/bin/ln "-$3fv" "$1" "$2"
 }
 
-lnh "$EDITOR" "$BIN/e" s
+if echo "$EDITOR" | /bin/grep snap; then
+	[ -e "$BIN/e" ] && /bin/rm "$BIN/e"
+	/bin/cat <<- EOL > "$BIN/e"
+	#!/usr/bin/env sh
+	$(/bin/realpath "$EDITOR") run $(/bin/basename "$EDITOR") "\$@"
+	EOL
+	/bin/chmod +x "$BIN/e"
+else
+	lnh "$EDITOR" "$BIN/e" s
+fi
 lnh "$XDG_CONFIG_HOME/shell/base-config/zshrc.sh" "$ZDOTDIR/.zshrc" s
 lnh "$XDG_CONFIG_HOME/shell/base-config/zprofile.sh" "$ZDOTDIR/.zprofile" s

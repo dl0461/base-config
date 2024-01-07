@@ -14,29 +14,46 @@ lnh() {
 
 git_type=$HOME/.git-$TYPE
 
-if [ ! -d "$git_type" ]; then
+if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't been installed
+
+	base_config=$TYPE/.config
+	base_bin=$TYPE/.local/bin
+	base_path=/usr/local/sbin:/usr/local/bin:/usr/bin
+
+	home_config=$HOME/.config
+	home_bin=$HOME/.local/bin
+
 	/bin/mv -v "$HOME/$TYPE/.git" "$git_type"
-fi
 
-if [ ! -h "$HOME/.zprofile" ]; then # base-config hasn't been installed
-	git config core.filemode true
+	for dir in git nvim shell tridactyl; do
+		if ! /bin/mkdir "$home_config/$dir"; then
+			echo "$home_config/$dir exists. Backup then remove this directory."
+			exit 1
+		fi
+		/bin/mv "$base_config/$dir/"* "$home_config/$dir"
+	done
 
-	export BIN="$HOME/.local/bin"
+	/bin/mkdir -p "$home_bin"
+	/bin/mv "$base_bin/$TYPE" "$home_bin"
+
+	export BIN="$home_bin"
 	export EDITOR="$(which nvim)"
-	export XDG_CONFIG_HOME="$HOME/.config"
+	export XDG_CONFIG_HOME="$home_config"
 	export XDG_DATA_HOME="$HOME/.local/share"
 	export XDG_STATE_HOME="$HOME/.local/state"
 	export ZDOTDIR="$HOME"
 
-	export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:"$BIN/$TYPE"
+	export PATH="$base_path:$BIN/$TYPE"
 
 	if [ "$SHELL" != '/bin/zsh' ]; then
 		echo "Changing shell to Zsh..."
-		chsh -s /bin/zsh
+		/bin/chsh -s /bin/zsh
 	fi
 fi
 
 git_config_dir=$XDG_CONFIG_HOME/git
+
+git --git-dir="$git_type" config core.filemode true
 
 lnh "$git_config_dir/exclude-$TYPE" "$git_type/info/exclude"
 
@@ -44,10 +61,12 @@ for hook in $(basename "$git_config_dir/hooks"/*); do
 	lnh "$git_config_dir/hooks/$hook" "$git_type/hooks/$hook" "x"
 done
 
-mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
+/bin/mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
 
 if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
 	. "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
 fi
+
+/bin/rm -rf "$TYPE"
 
 echo "If this is the first time $TYPE has be initialized, logout."
