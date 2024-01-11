@@ -32,6 +32,8 @@ Replace `git [commands]` with `git-"$config_repo" [commands]` to use a config re
 
 ## Create a config
 
+The name of a config is of the form `*-config`.
+
 ### Shell Configuration
 
 ```shell

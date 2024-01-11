@@ -4,7 +4,7 @@ lnh () {
 	/bin/ln "-$3fv" "$1" "$2"
 }
 
-if echo "$EDITOR" | /bin/grep snap; then
+if echo "$EDITOR" | /bin/grep -q snap; then
 	[ -e "$BIN/e" ] && /bin/rm "$BIN/e"
 	/bin/cat <<- EOL > "$BIN/e"
 	#!/usr/bin/env sh

@@ -16,12 +16,12 @@ git_type=$HOME/.git-$TYPE
 
 if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't been installed
 
-	base_config=$TYPE/.config
-	base_bin=$TYPE/.local/bin
-	base_path=/usr/local/sbin:/usr/local/bin:/usr/bin
-
+	base_config=$HOME/$TYPE/.config
+	base_bin=$HOME/$TYPE/.local/bin
 	home_config=$HOME/.config
 	home_bin=$HOME/.local/bin
+
+	base_path=/usr/local/sbin:/usr/local/bin:/usr/bin
 
 	/bin/mv -v "$HOME/$TYPE/.git" "$git_type"
 
@@ -30,11 +30,11 @@ if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't
 			echo "$home_config/$dir exists. Backup then remove this directory."
 			exit 1
 		fi
-		/bin/mv "$base_config/$dir/"* "$home_config/$dir"
+		/bin/mv -v "$base_config/$dir/"* "$home_config/$dir"
 	done
 
 	/bin/mkdir -p "$home_bin"
-	/bin/mv "$base_bin/$TYPE" "$home_bin"
+	/bin/mv -v "$base_bin/$TYPE" "$home_bin"
 
 	export BIN="$home_bin"
 	export EDITOR="$(which nvim)"
@@ -57,7 +57,7 @@ git --git-dir="$git_type" config core.filemode true
 
 lnh "$git_config_dir/exclude-$TYPE" "$git_type/info/exclude"
 
-for hook in $(basename "$git_config_dir/hooks"/*); do
+for hook in $(basename "$git_config_dir/hooks/"*); do
 	lnh "$git_config_dir/hooks/$hook" "$git_type/hooks/$hook" "x"
 done
 
