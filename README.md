@@ -1,6 +1,6 @@
 # config
 
-config is a configuration management system for Linux users. base-config is the instance of config that contains files that are most likely to be useful in any Linux instance in the domain(s) a user works in&mdash;modify as desired.
+`config` is a configuration management system for Linux users. `base-config` is the instance of `config` that contains files that are most likely to be useful in any Linux instance in the domain(s) a user works in&mdash;modify as desired.
 
 ## Todo
 
