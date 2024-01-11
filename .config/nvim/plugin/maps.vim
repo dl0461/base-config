@@ -4,7 +4,7 @@ nnoremap <F3> :silent exec
 			\ "while !search(@/, \"W\") \| bn \| 0 \| endwhile"<CR>
 
 noremap <leader>m :call ToggleRelativeNumber()<CR>
-"noremap <leader>m :call ListingToMarkdown()<CR>q
+noremap <leader>d :call TrimJobPost()<CR>
 
 map <C-h> <C-w>h
 map <C-j> <C-w>j
@@ -30,6 +30,7 @@ nnoremap <leader>f :bf<CR>
 nnoremap <leader>l :bl<CR>
 nnoremap <leader>o :on<CR>
 nnoremap <leader>q :bp<CR>
+nnoremap <leader>w :bn<CR>
 nnoremap <leader>w :bn<CR>
 
 nnoremap <leader>t :bel new<CR>:te<CR>

@@ -8,7 +8,18 @@ function! ToggleRelativeNumber()
 	endif
 endfunction
 
-function! ListingToMarkdown()
+function! TrimJobPost()
+	try
+	%s,^\n,,
+	catch /E486/
+	endtry
+	try
+	%s,^\s\+,,
+	catch /E486/
+	endtry
+endfunction
+
+function! JobPostToMarkdown()
 	" escape '\' if attempt to make this work with :exe
 	" broke AF
 	"let Silence = {c -> "try | '<,'>" . c . " | catch /E486/ | endtry"}
