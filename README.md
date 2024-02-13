@@ -1,11 +1,16 @@
 # config
 
-`config` is a configuration management system for Linux users. `base-config` is the instance of `config` that contains files that are most likely to be useful in any Linux instance in the domain(s) a user works in&mdash;modify as desired.
+`config` is a configuration management system for Linux users. Instructions for how to realize this system are provided below. `base-config` is the instance of `config` that contains files that are most likely to be useful in any Linux instance in the domain(s) a user works in&mdash;modify as desired.
 
 ## Todo
 
-- Add continuous testing with GitHub Actions
-- Make sure installation of base-config doesn't do unexpected things to the default desktop environment in Ubuntu
+### Generic
+- Add Ansible Playbooks for instances of `config`
+- Continuous testing with GitHub Actions
+    - Add tests for common platforms
+        - Make sure installation of base-config doesn't do unexpected things to the default desktop environment in Ubuntu
+
+### Personal
 - Streamline sensitive database synchronization
 
 ## Dependencies
@@ -13,6 +18,8 @@
 - Zsh
 - Neovim (lazy.nvim requires Neovim >= 0.8.0)
 - Python
+
+To be embedded with a tool such as Ansible
 
 ## Install a config
 

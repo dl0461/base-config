@@ -11,7 +11,7 @@ set wildoptions=pum
 
 set statusline=%-f\ %-h%-w%-q%-r%-m
 
-function MyTabLine()
+function SimpleTabLine()
 	let s = ''
 	for i in range(tabpagenr('$'))
 		if i + 1 == tabpagenr()
@@ -27,7 +27,7 @@ function MyTabLine()
 	endif
 	return s
 endfunction
-set tabline=%!MyTabLine()
+set tabline=%!SimpleTabLine()
 
 set cursorline
 set number relativenumber

@@ -1,3 +1,23 @@
+function! RawPasteFromAnyRegister()
+	set paste
+    let l:char = input("Enter a register: ")
+    " echo "Got char: " . l:char . " with UTF-8 code: " . char2nr(l:char)
+    let l:register = l:char[0]
+    call feedkeys('"' . l:register . 'p')
+	set nopaste
+endfunction
+
+function! TrimSelection()
+	try
+		'<,'>s,^\n,,
+	catch /.*/
+	endtry
+	try
+		'<,'>s,^\s\+,,
+	catch /.*/
+	endtry
+endfunction
+
 function! ToggleRelativeNumber()
 	if &relativenumber
 		set norelativenumber
@@ -6,17 +26,6 @@ function! ToggleRelativeNumber()
 		set relativenumber
 		set number
 	endif
-endfunction
-
-function! TrimJobPost()
-	try
-	%s,^\n,,
-	catch /E486/
-	endtry
-	try
-	%s,^\s\+,,
-	catch /E486/
-	endtry
 endfunction
 
 function! JobPostToMarkdown()

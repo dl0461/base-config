@@ -2,14 +2,17 @@ let mapleader = ","
 
 nnoremap <F3> :silent exec
 			\ "while !search(@/, \"W\") \| bn \| 0 \| endwhile"<CR>
-
 noremap <leader>m :call ToggleRelativeNumber()<CR>
-noremap <leader>d :call TrimJobPost()<CR>
+noremap <leader>d :call TrimSelection()<CR>
+" - workarounds for processing done on contents of registers
+" - changing nvim_paste handler vim.paste does not seem to work
+inoremap <C-p> <Esc>:call RawPasteFromAnyRegister()<CR>
 
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
+" <C-h> and <C-H> are the same - limitations in design due prevent mapping ctrl+shift+[key]
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 nnoremap <leader>0 :b10<CR>
 nnoremap <leader>1 :b1<CR>
