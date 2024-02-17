@@ -31,6 +31,9 @@ export SAVEHIST=300
 export VISUAL=$EDITOR
 export ZDOTDIR=$HOME
 
+# even with chars such as "-" and "$" in WORDCHARS, the shell doesn't allow one to skip over something like "git-base-config" or "$CFG"
+export WORDCHARS=${WORDCHARS//[\/]/}
+
 export PATH=$PATH:$BIN:$(find "$BIN" -maxdepth 1 -type d -name '*-config' -printf '%p:')
 
 [ "$SSH_AGENT_PID" ] || eval "$(ssh-agent)" >/dev/null

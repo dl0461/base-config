@@ -20,6 +20,17 @@ fi
 
 autoload -Uz compinit && compinit -i
 zstyle ':completion:*' menu select
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' verbose true
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots)
@@ -39,20 +50,21 @@ zle-line-init() {
 zle -N zle-keymap-select
 zle -N zle-line-init
 
+#bindkey -M menuselect '^N' down-line-or-search
+#bindkey -M menuselect '^P' up-line-or-search
 bindkey -M menuselect '^N' vi-forward-char
 bindkey -M menuselect '^P' vi-backward-char
+
 bindkey -M viins '^H' backward-delete-char
 bindkey -M viins '^W' backward-delete-word
 
 bindkey -s '^O' 'cd ..^M'
 
 alias \
-	cp='cp -iv' \
+	cp='cp -i' \
 	grep='grep -E' \
 	less='less -SIR' \
-	mv='mv -iv' \
-	rm='rm -i' \
-	rmdir='rmdir -v' \
+	mv='mv -i' \
 	rsync='rsync --progress'\
 
 alias sgpt='if [[ -z "$OPENAI_API_KEY" ]]; then
