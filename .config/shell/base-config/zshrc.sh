@@ -1,4 +1,4 @@
-PS1="%B%F{12}%n@%m %~%F{reset_color}%b"$'\n'
+PS1="%K{blue}%B%F{12}%n@%m%k %(4~|...|)%3~%F{reset_color}%b"$'\n'
 
 export KEYTIMEOUT=1
 

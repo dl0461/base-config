@@ -7,23 +7,18 @@ fi
 
 TYPE=$1
 
-lnh() {
-	/bin/ln -fv "$1" "$2"
-	[ "x" = "$3" ] && /bin/chmod -v 700 "$1"
-}
-
 git_type=$HOME/.git-$TYPE
 
-if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't been installed
+hydrate_home_with_baseconfig() {
 
-	base_config=$HOME/$TYPE/.config
-	base_bin=$HOME/$TYPE/.local/bin
+	base_config=$HOME/base-config/.config
+	base_bin=$HOME/base-config/.local/bin
 	home_config=$HOME/.config
 	home_bin=$HOME/.local/bin
 
 	base_path=/usr/local/sbin:/usr/local/bin:/usr/bin
 
-	/bin/mv -v "$HOME/$TYPE/.git" "$git_type"
+	/bin/mv -v "$HOME/base-config/.git" "$git_type"
 
 	for dir in git nvim shell tridactyl; do
 		if ! /bin/mkdir "$home_config/$dir"; then
@@ -34,7 +29,12 @@ if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't
 	done
 
 	/bin/mkdir -p "$home_bin"
-	/bin/mv -v "$base_bin/$TYPE" "$home_bin"
+	/bin/mv -v "$base_bin/base-config/"* "$home_bin"
+}
+
+if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$HOME/.git-base-config" ]; then
+
+    hydrate_home_with_baseconfig
 
 	export BIN="$home_bin"
 	export EDITOR="$(which nvim)"
@@ -43,7 +43,7 @@ if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't
 	export XDG_STATE_HOME="$HOME/.local/state"
 	export ZDOTDIR="$HOME"
 
-	export PATH="$base_path:$BIN/$TYPE"
+	export PATH="$base_path:$BIN/base-config"
 
 	if [ "$SHELL" != '/bin/zsh' ]; then
 		echo "Changing shell to Zsh..."
@@ -51,21 +51,27 @@ if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$git_type" ]; then # base-config hasn't
 	fi
 fi
 
+if [ "$TYPE" != 'base-config' ] && [ ! -d "$XDG_CONFIG_HOME/shell/$TYPE" ]; then
+    /bin/mv "$TYPE/.config/shell/$TYPE" "$XDG_CONFIG_HOME/shell"
+fi
+
+if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
+    . "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
+fi
+
+lnh() {
+	/bin/ln -fv "$1" "$2"
+	[ "x" = "$3" ] && /bin/chmod -v 700 "$1"
+}
+
 git_config_dir=$XDG_CONFIG_HOME/git
-
-git --git-dir="$git_type" config core.filemode true
-
 lnh "$git_config_dir/exclude-$TYPE" "$git_type/info/exclude"
-
 for hook in $(basename "$git_config_dir/hooks/"*); do
 	lnh "$git_config_dir/hooks/$hook" "$git_type/hooks/$hook" "x"
 done
 
+git --git-dir="$git_type" config core.filemode true
 /bin/mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
-
-if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
-	. "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
-fi
 
 /bin/rm -rf "$TYPE"
 

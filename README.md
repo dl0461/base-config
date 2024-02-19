@@ -15,23 +15,46 @@
 
 ## Dependencies
 
+### base-config
+
 - Zsh
 - Neovim (lazy.nvim requires Neovim >= 0.8.0)
 - Python
 
-To be embedded with a tool such as Ansible
+### wayland-config
+
+- Sway
+- Foot (installed with Sway)
+- brightnessctl (if using laptop)
+- wl-clipboard (xclip "equivalent")
+- VS Code
+
+&mdash;to be embedded with a tool such as Ansible, along with others&mdash;such as GTK themes and a web browser.
 
 ## Install a config
 
-Assign `config_repo=base-config` (or another repo like `wayland-config`) then do
+`.local/bin/base-config/init-any-config` and all `init-more` scripts are supposed to idempotent.
+
+Assign `config_repo` to something like `base-config` or `wayland-config` then do
 
 ```shell
 cd
 git clone --depth 1 https://github.com/dl0461/"$config_repo".git
+```
+
+If `config_repo` is not `base-config`
+
+```shell
+init-any-config "$config_repo"
+```
+
+else
+
+```shell
 . "$config_repo/.local/bin/$config_repo/"init-any-config "$config_repo"
 ```
 
-, now logout.
+Now verify all dependencies are installed then logout.
 
 ## Use a config
 
