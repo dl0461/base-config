@@ -1,22 +1,25 @@
 #!/usr/bin/env sh
 
-# have to delimit these with double quotes for the internal processing of wpa_cli
-SSID="\"$1\""
-PSK="\"$2\""
+SSID="$1"
+PSK="$2"
 
 if sudo wpa_cli status | grep -q "ssid=$SSID"; then
     echo "Already connected to $SSID."
     exit 0
 fi
 
-connect() {
+connect_by_ssid() {
     sudo wpa_cli add_network | grep -q '^[0-9]' || { echo "Failed to add network"; exit 1; }
     NET_ID=$?
-
-    sudo wpa_cli set_network $NET_ID ssid "$SSID" > /dev/null 2>&1 || { echo "Failed to set SSID"; exit 1; }
-    sudo wpa_cli set_network $NET_ID psk "$PSK" > /dev/null 2>&1 || { echo "Failed to set PSK"; exit 1; }
+    # have to delimit these with double quotes for the internal processing of wpa_cli
+    sudo wpa_cli set_network $NET_ID ssid "\"$SSID\"" > /dev/null 2>&1 || { echo "Failed to set SSID"; exit 1; }
+    sudo wpa_cli set_network $NET_ID psk "\"$PSK\"" > /dev/null 2>&1 || { echo "Failed to set PSK"; exit 1; }
     sudo wpa_cli enable_network $NET_ID > /dev/null 2>&1 || { echo "Failed to enable network"; exit 1; }
     sudo wpa_cli select_network $NET_ID > /dev/null 2>&1 || { echo "Failed to select network"; exit 1; }
+}
+
+connect_by_bssid() {
+    nmcli device wifi connect "$SSID" bssid "$1" password "$PSK" || exit 1
 }
 
 sudo wpa_cli scan > /dev/null 2>&1
@@ -25,7 +28,8 @@ sleep 5
 
 SCAN_ATTEMPTS=0
 MAX_SCAN_ATTEMPTS=5
-while ! sudo wpa_cli scan_results | grep -q "$SSID"; do
+# iphone has shown to generate multiple bssid after repeated testing
+while BSSID=$(sudo wpa_cli scan_results | awk "\$5 = /$SSID/ { print \$1 }") && [ -z "$BSSID" ]; do
     if [ $SCAN_ATTEMPTS -ge $MAX_SCAN_ATTEMPTS ]; then
         echo "Network $SSID not found after $MAX_SCAN_ATTEMPTS attempts."
         exit 1
@@ -36,13 +40,13 @@ while ! sudo wpa_cli scan_results | grep -q "$SSID"; do
     sleep 5
 done
 
-if ! connect; then
+if ! connect_by_bssid "$BSSID"; then
     echo "Connection attempt failed. Retrying..."
     sleep 5
-    if ! connect; then
-        echo "Failed to connect to $SSID after multiple attempts."
+    if ! connect_by_bssid "$BSSID"; then
+        echo "Failed to connect to $BSSID with $SSID after multiple attempts."
         exit 1
     fi
 fi
 
-echo "Successfully connected to $SSID."
+echo "Successfully connected to $BSSID with $SSID."
