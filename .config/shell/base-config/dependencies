@@ -1,0 +1,67 @@
+#!/usr/bin/env sh
+
+CALLING_DIR=$(pwd)
+
+DISTRO_NAME=$(awk -F= '/^NAME/{print $2}' /etc/os-release | tr -d '"')
+
+install_package() {
+    local package=$1
+    case "$DISTRO_NAME" in
+        "Debian GNU/Linux"|"Ubuntu"|"Pop\!_OS")
+            sudo apt-get install -y "$package"
+            ;;
+        *)
+            echo "Package manager not supported"
+            return 1
+            ;;
+    esac
+}
+
+if ! which nvim > /dev/null 2>&1; then
+    echo "Downloading the latest stable build of Neovim..."
+    download_attempt_count=0
+    max_attempts=5
+    while [ $download_attempt_count -lt $max_attempts ]; do
+        if curl -sL https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
+            | tar -xz -C /tmp/; then
+            echo "Download and extraction successful."
+            break
+        else
+            download_attempt_count=$((download_attempt_count + 1))
+            echo "Neovim download attempt $download_attempt_count failed."
+            sleep 1
+        fi
+    done
+    if [ $download_attempt_count -eq $max_attempts ]; then
+        echo "Failed to download Neovim after $max_attempts attempts."
+        exit 1
+    fi
+    if cd /tmp/nvim-linux64; then
+        echo "Installing Neovim..."
+        while IFS=',' read -r source dest; do
+            sudo rsync -r --remove-source-files "./$source" "$dest"
+            echo "$dest <- ${source%/}/"
+        done <<EOF
+bin/,/usr/local/bin/
+lib/,/usr/local/lib/
+man/man1/,/usr/share/man/man1/
+share/locale/,/usr/share/locale/
+share/applications/,/usr/share/applications/
+share/icons/,/usr/share/icons/
+share/nvim/,/usr/local/share/nvim/
+EOF
+        sudo find . -type d -empty -delete
+        sudo rmdir /tmp/nvim-linux64
+    else
+        echo "Failed to change directory to /tmp/nvim-linux64" >&2
+        exit 1
+    fi
+else
+    echo "Neovim executable is installed"
+fi
+
+if ! which zsh > /dev/null 2>&1; then
+    install_package zsh
+fi
+
+cd "$CALLING_DIR" || exit 1

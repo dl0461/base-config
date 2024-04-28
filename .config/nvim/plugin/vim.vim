@@ -41,6 +41,9 @@ let g:netrw_browsex_viewer=""
 let g:netrw_home="$XDG_STATE_HOME/nvim"
 let g:netrw_keepdir=0
 
+au VimEnter * redir! > ~/.local/state/nvim/startup.log
+au BufWinEnter * redir END | autocmd! BufWinEnter
+
 syntax enable
 if filereadable(expand('~/.config/nvim/colors/gradient.vim'))
 	colorscheme gradient
