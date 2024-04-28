@@ -17,6 +17,10 @@ install_package() {
     esac
 }
 
+if ! which zsh > /dev/null 2>&1; then
+    install_package zsh
+fi
+
 if ! which nvim > /dev/null 2>&1; then
     echo "Downloading the latest stable build of Neovim..."
     download_attempt_count=0
@@ -58,10 +62,6 @@ EOF
     fi
 else
     echo "Neovim executable is installed"
-fi
-
-if ! which zsh > /dev/null 2>&1; then
-    install_package zsh
 fi
 
 cd "$CALLING_DIR" || exit 1
