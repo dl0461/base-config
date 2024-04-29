@@ -47,13 +47,7 @@ if [ ! -h "$HOME/.zprofile" ] || [ ! -d "$HOME/.git-base-config" ]; then
 	fi
 fi
 
-if [ "$TYPE" != 'base-config' ] && [ ! -d "$XDG_CONFIG_HOME/shell/$TYPE" ]; then
-    /bin/mv "$TYPE/.config/shell/$TYPE" "$XDG_CONFIG_HOME/shell"
-fi
-
-if [ -f "$XDG_CONFIG_HOME/shell/$TYPE/init-more" ]; then
-    . "$XDG_CONFIG_HOME/shell/$TYPE/init-more"
-fi
+"$HOME/$TYPE/shell/$TYPE/init-more"
 
 lnh() {
 	/bin/ln -fv "$1" "$2"
