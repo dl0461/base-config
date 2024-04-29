@@ -38,6 +38,8 @@ export PATH=$PATH:$BIN:$(find "$BIN" -maxdepth 1 -type d -name '*-config' -print
 
 [ "$SSH_AGENT_PID" ] || eval "$(ssh-agent)" >/dev/null
 
+[ "$TMUX" ] || trap "ssh-agent -k > /dev/null" EXIT
+
 if [ -f "$HOME/.ssh/github" ]; then
 	ssh-add "$HOME/.ssh/github" &>/dev/null
 fi
