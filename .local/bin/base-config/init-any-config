@@ -11,25 +11,17 @@ git_type=$HOME/.git-$TYPE
 
 hydrate_home_with_baseconfig() {
 
-	base_config=$HOME/base-config/.config
-	base_bin=$HOME/base-config/.local/bin
-	home_config=$HOME/.config
-	home_bin=$HOME/.local/bin
+    base_config="$HOME/base-config/.config"
+    base_bin="$HOME/base-config/.local/bin"
+    home_config="$HOME/.config"
+    home_bin="$HOME/.local/bin"
 
-	base_path=/usr/local/sbin:/usr/local/bin:/usr/bin
+    /bin/mv -v "$HOME/base-config/.git" "$git_type"
 
-	/bin/mv -v "$HOME/base-config/.git" "$git_type"
-
-	for dir in git nvim shell tridactyl; do
-		if ! /bin/mkdir "$home_config/$dir"; then
-			echo "$home_config/$dir exists. Backup then remove this directory."
-			exit 1
-		fi
-		/bin/mv -v "$base_config/$dir/"* "$home_config/$dir"
-	done
-
-	/bin/mkdir -p "$home_bin"
-	/bin/mv -v "$base_bin/base-config/"* "$home_bin"
+    for dir in git nvim shell tridactyl; do
+        rsync -av --remove-source-files "$base_config/$dir" "$home_config"
+    done
+    rsync -av --remove-source-files "$base_bin/base-config" "$home_bin"
 }
 
 if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$HOME/.git-base-config" ]; then

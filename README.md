@@ -2,11 +2,6 @@
 
 `config` is a configuration management system for Linux users. Instructions for how to realize this system are provided below. `base-config` is the instance of `config` that contains files that are most likely to be useful in any Linux instance in the domain(s) a user works in&mdash;modify as desired.
 
-## Todo
-
-- Improve hydration maintainability with `rsync`
-- Run `.config/shell/*-config/dependencies` in `init-any-config`
-
 ## Dependencies
 
 ### base-config
