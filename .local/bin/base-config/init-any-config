@@ -49,7 +49,9 @@ if [ ! -h "$HOME/.zprofile" ] || [ ! -d "$HOME/.git-base-config" ]; then
 	fi
 fi
 
-"$HOME/$TYPE/shell/$TYPE/init"
+if [ -f "$HOME/$TYPE/.config/shell/$TYPE/init" ]; then
+    "$HOME/$TYPE/.config/shell/$TYPE/init"
+fi
 
 lnh() {
 	/bin/ln -fv "$1" "$2"
