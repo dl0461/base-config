@@ -17,6 +17,8 @@ install_package() {
     esac
 }
 
+echo "Checking dependencies for base-config..."
+
 if ! which zsh > /dev/null 2>&1; then
     install_package zsh
 fi
@@ -60,8 +62,6 @@ EOF
         echo "Failed to change directory to /tmp/nvim-linux64" >&2
         exit 1
     fi
-else
-    echo "Neovim executable is installed"
 fi
 
 cd "$CALLING_DIR" || exit 1

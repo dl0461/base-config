@@ -28,6 +28,8 @@ hydrate_home_with_baseconfig() {
 
 if [ ! -h "$HOME/.zprofile" ] || [ ! -d "$HOME/.git-base-config" ]; then
 
+    "$HOME/base-config/.config/shell/base-config/dependencies"
+
     hydrate_home_with_baseconfig
 
 	export BIN="$home_bin"
