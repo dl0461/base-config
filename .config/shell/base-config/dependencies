@@ -8,6 +8,7 @@ install_package() {
     local package=$1
     case "$DISTRO_NAME" in
         "Debian GNU/Linux"|"Ubuntu"|"Pop\!_OS")
+            echo "Installing package $package..."
             sudo apt-get install -y "$package"
             ;;
         *)
@@ -28,7 +29,7 @@ if ! which nvim > /dev/null 2>&1; then
     download_attempt_count=0
     max_attempts=5
     while [ $download_attempt_count -lt $max_attempts ]; do
-        if curl -sL https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
+        if wget -qO- https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
             | tar -xz -C /tmp/; then
             echo "Download and extraction successful."
             break
@@ -62,6 +63,10 @@ EOF
         echo "Failed to change directory to /tmp/nvim-linux64" >&2
         exit 1
     fi
+fi
+
+if ! which tree > /dev/null 2>&1; then
+    install_package tree
 fi
 
 cd "$CALLING_DIR" || exit 1
