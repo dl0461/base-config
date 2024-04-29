@@ -19,12 +19,14 @@ hydrate_home_with_baseconfig() {
     /bin/mv -v "$HOME/base-config/.git" "$git_type"
 
     for dir in git nvim shell tridactyl; do
-        rsync -av --remove-source-files "$base_config/$dir" "$home_config"
+        rsync -r --remove-source-files "$base_config/$dir" "$home_config"
+        echo "$home_config/$dir <- $base_config/$dir"
     done
-    rsync -av --remove-source-files "$base_bin/base-config" "$home_bin"
+    rsync -r --remove-source-files "$base_bin/base-config" "$home_bin"
+    echo "$home_bin/base-config <- $base_bin/base-config"
 }
 
-if [ ! -h "$HOME/.zprofile" ] && [ ! -d "$HOME/.git-base-config" ]; then
+if [ ! -h "$HOME/.zprofile" ] || [ ! -d "$HOME/.git-base-config" ]; then
 
     hydrate_home_with_baseconfig
 
@@ -58,11 +60,11 @@ lnh() {
 
 git_config_dir=$XDG_CONFIG_HOME/git
 lnh "$git_config_dir/exclude-$TYPE" "$git_type/info/exclude"
-for hook in $(basename "$git_config_dir/hooks/"*); do
+for hook in $(/bin/basename "$git_config_dir/hooks/"*); do
 	lnh "$git_config_dir/hooks/$hook" "$git_type/hooks/$hook" "x"
 done
 
-git --git-dir="$git_type" config core.filemode true
+/usr/bin/git --git-dir="$git_type" config core.filemode true
 /bin/mkdir -p "$XDG_DATA_HOME" "$XDG_STATE_HOME/zsh"
 
 /bin/rm -rf "$TYPE"
