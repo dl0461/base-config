@@ -32,6 +32,8 @@ if [ ! -h "$HOME/.zprofile" ] || [ ! -d "$HOME/.git-base-config" ]; then
 
     hydrate_home_with_baseconfig
 
+    "$XDG_CONFIG_HOME/shell/base-config/init-more"
+
 	export BIN="$home_bin"
 	export EDITOR="$(which nvim)"
 	export XDG_CONFIG_HOME="$home_config"
@@ -47,7 +49,7 @@ if [ ! -h "$HOME/.zprofile" ] || [ ! -d "$HOME/.git-base-config" ]; then
 	fi
 fi
 
-"$HOME/$TYPE/shell/$TYPE/init-more"
+"$HOME/$TYPE/shell/$TYPE/init"
 
 lnh() {
 	/bin/ln -fv "$1" "$2"
