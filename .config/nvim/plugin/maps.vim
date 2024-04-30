@@ -6,7 +6,7 @@ noremap <leader>m :call ToggleRelativeNumber()<CR>
 noremap <leader>d :call TrimSelection()<CR>
 " - workarounds for processing done on contents of registers
 " - changing nvim_paste handler vim.paste does not seem to work
-inoremap <C-p> <Esc>:call RawPasteFromAnyRegister()<CR>
+imap <C-r> <Esc>:call RawPasteFromAnyRegister()<CR>
 
 " <C-h> and <C-H> are the same - limitations in design due prevent mapping ctrl+shift+[key]
 nnoremap <C-h> <C-w>h
