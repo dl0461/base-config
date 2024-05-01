@@ -12,5 +12,6 @@ bind ZR zoom -2 true
 bind <C-J> tabm -1
 bind <C-K> tabm +1
 bind gd tabduplicate
+unbind <C-a>
 autocmd DocStart ".*localhost:8888.*" "mode ignore"
 colourscheme quake

@@ -1,6 +1,6 @@
 function! RawPasteFromAnyRegister()
 	set paste
-    let l:char = input("Enter a register: ")
+    let l:char = input("\"")
     " echo "Got char: " . l:char . " with UTF-8 code: " . char2nr(l:char)
     let l:register = l:char[0]
     call feedkeys('"' . l:register . 'p')
